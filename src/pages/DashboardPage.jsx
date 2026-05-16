@@ -86,14 +86,27 @@ export default function DashboardPage() {
     }
   };
 
+  // const handleSelectHistory = async (item) => {
+  //   // Kalau sudah ada detail lengkap, langsung tampilkan
+  //   if (item.bot_percentage !== undefined && item.recommendation) {
+  //     setSelectedItem(item);
+  //     setView("result");
+  //     return;
+  //   }
+  //   // Kalau belum, fetch detail
+  //   try {
+  //     const res = await fetch(`${BASE_URL}/audits/${item.id}`, {
+  //       headers: { Authorization: `Bearer ${getToken()}` },
+  //     });
+  //     const data = await res.json();
+  //     if (data.status === "success") {
+  //       setSelectedItem(data.data);
+  //       setView("result");
+  //     }
+  //   } catch {}
+  // };
+
   const handleSelectHistory = async (item) => {
-    // Kalau sudah ada detail lengkap, langsung tampilkan
-    if (item.bot_percentage !== undefined && item.recommendation) {
-      setSelectedItem(item);
-      setView("result");
-      return;
-    }
-    // Kalau belum, fetch detail
     try {
       const res = await fetch(`${BASE_URL}/audits/${item.id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
@@ -253,11 +266,11 @@ export default function DashboardPage() {
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="bg-[#0A192F] rounded-xl p-4 text-center">
-                  <p className="text-2xl font-black text-red-400">{selectedItem.bot_percentage?.toFixed(1)}%</p>
+                  <p className="text-2xl font-black text-red-400">{parseFloat(selectedItem.bot_percentage).toFixed(1)}%</p>
                   <p className="text-xs text-[#8892B0] mt-1">Bot</p>
                 </div>
                 <div className="bg-[#0A192F] rounded-xl p-4 text-center">
-                  <p className="text-2xl font-black text-[#64FFDA]">{selectedItem.real_percentage?.toFixed(1)}%</p>
+                  <p className="text-2xl font-black text-[#64FFDA]">{parseFloat(selectedItem.real_percentage).toFixed(1)}%</p>
                   <p className="text-xs text-[#8892B0] mt-1">Asli</p>
                 </div>
                 <div className="bg-[#0A192F] rounded-xl p-4 text-center">
