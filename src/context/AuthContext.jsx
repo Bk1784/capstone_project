@@ -16,8 +16,11 @@ export function AuthProvider({ children }) {
         return;
       }
       try {
-        const res = await fetch(`${BASE_URL}/auth/me`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
+        const res = await fetch(`${BASE_URL}/auth/me?t=${Date.now()}`, {
+          headers: { 
+            Authorization: `Bearer ${accessToken}`,
+            "Cache-Control": "no-cache",
+          },
         });
         const data = await res.json();
         if (data.status === "success") {
