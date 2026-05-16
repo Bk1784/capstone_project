@@ -8,7 +8,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Saat app pertama load, restore session dari token
   useEffect(() => {
     const restoreSession = async () => {
       const accessToken = localStorage.getItem("accessToken");
@@ -27,10 +26,8 @@ export function AuthProvider({ children }) {
             name: data.data.name,
             email: data.data.email,
             picture: data.data.avatar_url,
-            username: data.data.name,
           });
         } else {
-          // Token expired, coba refresh
           await refreshAccessToken();
         }
       } catch {
@@ -43,7 +40,6 @@ export function AuthProvider({ children }) {
     restoreSession();
   }, []);
 
-  // Dipanggil dari CallbackPage setelah Google redirect
   const handleOAuthCallback = (accessToken, refreshToken, userData) => {
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
@@ -52,7 +48,6 @@ export function AuthProvider({ children }) {
       name: userData.name,
       email: userData.email,
       picture: userData.avatar_url,
-      username: userData.name,
     });
   };
 
@@ -76,7 +71,6 @@ export function AuthProvider({ children }) {
     return null;
   };
 
-  // Login & Register → sama-sama redirect ke Google OAuth
   const loginWithGoogle = () => {
     window.location.href = `${BASE_URL}/auth/google`;
   };
@@ -93,14 +87,15 @@ export function AuthProvider({ children }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),
       });
-    } catch { /* tetap logout walau API gagal */ }
+    } catch {}
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     setUser(null);
   };
 
-  const updateUsername = (username) => {
-    setUser((prev) => ({ ...prev, username }));
+  // Fix: update name bukan username
+  const updateUsername = (name) => {
+    setUser((prev) => ({ ...prev, name }));
   };
 
   const getToken = () => localStorage.getItem("accessToken");

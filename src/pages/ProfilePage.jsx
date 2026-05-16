@@ -50,7 +50,6 @@ export default function ProfilePage() {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-[#0A192F] text-[#CCD6F6]">
       <header className="flex items-center justify-between px-6 py-4 border-b border-[#112240] bg-[#0D2137]">
