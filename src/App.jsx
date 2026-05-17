@@ -39,6 +39,7 @@ export default function App() {
           <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
           <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
           <Route path="/auth/google/callback" element={<CallbackPage />} />
+          <Route path="/auth/callback" element={<CallbackPage />} />
           <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
