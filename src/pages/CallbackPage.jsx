@@ -22,7 +22,7 @@ export default function CallbackPage() {
         }
 
         const res = await fetch(`${BASE_URL}/auth/me?t=${Date.now()}`, {
-          headers: { 
+          headers: {
             Authorization: `Bearer ${accessToken}`,
             "Cache-Control": "no-cache",
           },
@@ -45,22 +45,32 @@ export default function CallbackPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#0A192F] flex flex-col items-center justify-center gap-4">
-        <p className="text-red-400 text-sm">{error}</p>
-        <button
-          onClick={() => navigate("/login")}
-          className="text-[#64FFDA] text-sm hover:underline cursor-pointer border-0 bg-transparent"
-        >
-          Kembali ke Login
-        </button>
+      <div className="h-screen w-screen flex flex-col items-center justify-center gap-3" style={{ background: "#e8eeff" }}>
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm px-8 py-6 flex flex-col items-center gap-4 w-full max-w-xs">
+          <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth={2}>
+              <circle cx="12" cy="12" r="10"/><path strokeLinecap="round" d="M12 8v4m0 4h.01"/>
+            </svg>
+          </div>
+          <p className="text-sm text-gray-600 text-center">{error}</p>
+          <button
+            onClick={() => navigate("/login")}
+            className="text-sm font-semibold cursor-pointer border-0 bg-transparent transition-opacity hover:opacity-70"
+            style={{ color: "#5b8dee" }}
+          >
+            ← Kembali ke Login
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0A192F] flex flex-col items-center justify-center gap-4">
-      <div className="w-8 h-8 border-2 border-[#112240] border-t-[#64FFDA] rounded-full animate-spin" />
-      <p className="text-[#8892B0] text-sm">Memproses login...</p>
+    <div className="h-screen w-screen flex flex-col items-center justify-center gap-3" style={{ background: "#e8eeff" }}>
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm px-8 py-6 flex flex-col items-center gap-4">
+        <div className="w-8 h-8 rounded-full border-2 border-gray-100 border-t-blue-400 animate-spin" style={{ borderTopColor: "#5b8dee" }} />
+        <p className="text-sm text-gray-500">Memproses login...</p>
+      </div>
     </div>
   );
 }
