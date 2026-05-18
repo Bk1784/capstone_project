@@ -10,47 +10,40 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white text-foreground overflow-hidden">
 
       {/* NAVBAR */}
-      <nav className="flex items-center justify-between px-8 py-4 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <nav className="flex items-center justify-between px-8 py-4 border-b bg-white sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center shadow-sm">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={3}>
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-          </div>
-          <span className="font-bold text-sm tracking-tight">FakeRadar</span>
+          <span className="font-bold text-sm" style={{ color: "#5b8dee" }}>FakeRadar</span>
         </div>
         <div className="flex items-center gap-2">
-          <Button size="sm" onClick={() => navigate("/login")}>Login</Button>
+          {/* <Button variant="ghost" size="sm" className="text-gray-500" onClick={() => navigate("/login")}>Masuk</Button> */}
+          <Button size="sm" style={{ background: "#5b8dee" }} className="text-white border-0 hover:opacity-90" onClick={() => navigate("/login")}>Masuk</Button>
         </div>
       </nav>
 
       {/* HERO */}
       <section className="relative px-8 pt-20 pb-24 max-w-5xl mx-auto">
         {/* Background blobs */}
-        <div className="absolute top-10 right-0 w-80 h-80 bg-red-100 rounded-full blur-3xl opacity-50 pointer-events-none" />
-        <div className="absolute top-32 right-24 w-48 h-48 bg-green-100 rounded-full blur-2xl opacity-60 pointer-events-none" />
+        {/* <div className="absolute top-10 right-0 w-80 h-80 bg-red-100 rounded-full blur-3xl opacity-50 pointer-events-none" />
+        <div className="absolute top-32 right-24 w-48 h-48 bg-green-100 rounded-full blur-2xl opacity-60 pointer-events-none" /> */}
 
         <div className="relative">
           <Badge variant="secondary" className="mb-5 bg-red-50 text-red-500 border-red-200 hover:bg-red-50">
             Deteksi Akun Instagram Palsu
           </Badge>
-          <h1 className="text-6xl font-bold tracking-tight leading-[1.08] mb-5 max-w-2xl">
+          <h1 className="text-6xl font-bold tracking-tight leading-[1.08] mb-5">
             Tahu mana<br />
-            yang <span className="text-red-500">asli</span>,<br />
-            mana yang <span className="relative inline-block">
+            yang <span style={{ color: "#5b8dee" }}>asli</span>,<br />
+            mana yang <span className="relative" style={{ color: "#f87171" }}>
               palsu
-              <span className="absolute bottom-1 left-0 w-full h-2 bg-green-200 -z-10 rounded" />
-            </span>.
+              <span className="absolute bottom-1 left-0 w-full h-2 rounded opacity-30" style={{ background: "#5b8dee", zIndex: -1 }} />
+            </span>?
           </h1>
           <p className="text-muted-foreground text-lg max-w-md mb-8 leading-relaxed">
-            Masukkan username Instagram. FakeRadar menganalisis ratusan sinyal dan memberikan skor kepalsuan akun secara instan.
+            Masukkan username Instagram. Inspector menganalisis dan memberikan skor kepalsuan akun secara instan.
           </p>
           <div className="flex items-center gap-3">
-            <Button size="lg" onClick={() => navigate("/register")} className="shadow-md">
-              Mulai Gratis →
-            </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate("/login")}>
-              Masuk
+            <Button size="lg" onClick={() => navigate("/login")} className="shadow-md">
+              Mulai Masuk →
             </Button>
           </div>
         </div>
@@ -114,7 +107,7 @@ export default function LandingPage() {
           <p className="text-xs font-semibold tracking-widest uppercase text-muted-foreground mb-10 text-center">Cara Kerja</p>
           <div className="grid grid-cols-3 gap-5">
             {[
-              { num: "01", title: "Masukkan Username", desc: "Ketik username Instagram tanpa @. Tidak perlu login atau link apapun.", accent: "bg-red-50 border-red-100", numColor: "text-red-400" },
+              { num: "01", title: "Masukkan Username", desc: "Ketik username Instagram menggunakan @", accent: "bg-red-50 border-red-100", numColor: "text-red-400" },
               { num: "02", title: "AI Menganalisis", desc: "Sistem menganalisis follower ratio, pola posting, engagement rate, dan 15+ sinyal lainnya.", accent: "bg-orange-50 border-orange-100", numColor: "text-orange-400" },
               { num: "03", title: "Dapatkan Hasilnya", desc: "Skor kepalsuan beserta rekomendasi detail. Jelas, langsung, tidak berbelit.", accent: "bg-green-50 border-green-100", numColor: "text-green-500" },
             ].map((s) => (
@@ -158,16 +151,15 @@ export default function LandingPage() {
         <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
         <div className="max-w-5xl mx-auto text-center relative">
-          <h2 className="text-3xl font-bold tracking-tight mb-2">Coba sekarang. Gratis.</h2>
-          <p className="text-primary-foreground/70 text-sm mb-6">Tidak perlu setup. Langsung pakai dalam 30 detik.</p>
-          <Button size="lg" variant="secondary" onClick={() => navigate("/register")} className="shadow-lg">
-            Daftar dengan Google →
+          <h2 className="text-3xl font-bold tracking-tight mb-2">Coba sekarang.</h2>
+          <Button size="lg" variant="secondary" onClick={() => navigate("/login")} className="shadow-lg">
+            Masuk Dengan Google →
           </Button>
         </div>
       </section>
 
       <footer className="border-t text-center py-4 text-muted-foreground text-xs bg-white">
-        © 2025 FakeRadar — Built for digital safety.
+        © 2026 Inspector — Capstone Project.
       </footer>
     </div>
   );
