@@ -163,6 +163,8 @@ export default function DashboardPage() {
         </aside>
 
         {/* MAIN CONTENT */}
+        <div className="flex-1 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col min-w-0 min-h-0 overflow-hidden">
+
           {/* SEARCH VIEW */}
           {view === "search" && (
             <main className="flex-1 flex items-center justify-center p-8">
@@ -199,7 +201,53 @@ export default function DashboardPage() {
             </main>
           )}
 
-          
+          {/* RESULT VIEW */}
+          {view === "result" && selectedItem && (
+            <main className="flex-1 p-6 overflow-y-auto">
+              {/* max-w dikurangi supaya card tidak terlalu lebar */}
+              <div className="max-w-xl mx-auto">
+
+                {/* Username header */}
+                <div className="flex items-center gap-3 mb-5">
+                  <h2 className="text-xl font-bold" style={{ color: "#5b8dee" }}>@{selectedItem.ig_username}</h2>
+                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${risk.badgeBg}`}>
+                    {risk.text}
+                  </span>
+                </div>
+
+                {/* Stats cards — diperbesar: padding p-5 → p-7, angka text-3xl → text-5xl */}
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div className="rounded-2xl p-7 text-center" style={{ background: "#fff0f0" }}>
+                    <p className="text-5xl font-bold" style={{ color: "#f87171" }}>{parseFloat(selectedItem.bot_percentage).toFixed(0)}%</p>
+                    <p className="text-sm mt-2" style={{ color: "#fca5a5" }}>Bot</p>
+                  </div>
+                  <div className="rounded-2xl p-7 text-center" style={{ background: "#f0fdf4" }}>
+                    <p className="text-5xl font-bold" style={{ color: "#34d399" }}>{parseFloat(selectedItem.real_percentage).toFixed(0)}%</p>
+                    <p className="text-sm mt-2" style={{ color: "#6ee7b7" }}>Asli</p>
+                  </div>
+                  <div className="rounded-2xl p-7 text-center bg-gray-50 border border-gray-100">
+                    <p className="text-5xl font-bold text-gray-700">{selectedItem.total_sample}</p>
+                    <p className="text-sm text-gray-400 mt-2">Sampel</p>
+                  </div>
+                </div>
+
+                {/* Rekomendasi */}
+                <div className="rounded-2xl p-5 bg-gray-100 border border-gray-200">
+                  <p className="text-xs text-gray-400 uppercase tracking-widest font-medium mb-2">Rekomendasi</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">{selectedItem.recommendation}</p>
+                </div>
+
+              </div>
+            </main>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+
           {/* RESULT VIEW */}
           {view === "result" && selectedItem && (
             <main className="flex-1 p-6 overflow-y-auto">
@@ -244,7 +292,3 @@ export default function DashboardPage() {
               </div>
             </main>
           )}
-      </div>
-    </div>
-  );
-}
