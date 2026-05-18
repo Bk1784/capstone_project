@@ -2,6 +2,17 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const BASE_URL = "https://inspector-api-five.vercel.app/api";
 
@@ -47,7 +58,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", background: "#e8eeff", overflow: "hidden" }}>
+    <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", background: "#f0f4ff", overflow: "hidden" }}>
 
       {/* ── HEADER — floating with margin all sides ── */}
       <div style={{ flexShrink: 0, padding: "12px 12px 0 12px" }}>
@@ -83,14 +94,35 @@ export default function ProfilePage() {
 
         {/* Kanan: user info + tombol keluar */}
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <button
-            onClick={() => { logout(); navigate("/"); }}
-            style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#ef4444", fontWeight: 500, padding: "4px 10px", borderRadius: 8, transition: "background .15s" }}
-            onMouseOver={e => e.currentTarget.style.background = "#fef2f2"}
-            onMouseOut={e => e.currentTarget.style.background = "none"}
-          >
-            Keluar
-          </button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button
+                style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#ef4444", fontWeight: 500, padding: "4px 10px", borderRadius: 8, transition: "background .15s" }}
+                onMouseOver={e => e.currentTarget.style.background = "#fef2f2"}
+                onMouseOut={e => e.currentTarget.style.background = "none"}
+              >
+                Keluar
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Keluar dari Inspector?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Kamu akan keluar dari akun <strong>{user?.name}</strong>. Kamu perlu login kembali untuk menggunakan Inspector.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Batal</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => { logout(); navigate("/"); }}
+                  style={{ background: "#ef4444" }}
+                  className="hover:bg-red-600"
+                >
+                  Ya, Keluar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span style={{ fontSize: 14, color: "#6b7280" }}>{user?.name || ""}</span>
             <Avatar className="w-8 h-8">
