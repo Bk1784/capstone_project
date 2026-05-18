@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const BASE_URL = "https://inspector-api-five.vercel.app/api";
 
@@ -32,6 +33,7 @@ export default function DashboardPage() {
   const [searchError, setSearchError] = useState(null);
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(true);
+  const [loadingHistoryId, setLoadingHistoryId] = useState(null); // ← BARU
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -69,6 +71,8 @@ export default function DashboardPage() {
   };
 
   const handleSelectHistory = async (item) => {
+    if (loadingHistoryId) return; // ← cegah double-click saat loading
+    setLoadingHistoryId(item.id); // ← mulai loading
     try {
       const res = await fetch(`${BASE_URL}/audits/${item.id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
@@ -76,6 +80,7 @@ export default function DashboardPage() {
       const data = await res.json();
       if (data.status === "success") { setSelectedItem(data.data); setView("result"); }
     } catch {}
+    finally { setLoadingHistoryId(null); } // ← selesai loading
   };
 
   const handleCariKembali = () => { setView("search"); setSelectedItem(null); setSearchError(null); };
@@ -117,7 +122,7 @@ export default function DashboardPage() {
       {/* ── BODY ── */}
       <div className="flex-1 flex gap-3 min-h-0">
 
-        {/* SIDEBAR — diperlebar dari w-60 → w-72, teks diperbesar */}
+        {/* SIDEBAR */}
         <aside
           className={`${sidebarOpen ? "w-72" : "w-0"} flex-shrink-0 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden transition-all duration-300`}
         >
@@ -130,31 +135,54 @@ export default function DashboardPage() {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth={2}>
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
               </svg>
-              {/* teks search diperbesar: text-xs → text-sm */}
               <span className="text-sm text-gray-400">search</span>
             </button>
           </div>
 
-          {/* History list — teks diperbesar */}
+          {/* History list */}
           <div className="flex-1 overflow-y-auto py-2">
             {historyLoading ? (
-              <p className="text-gray-400 text-sm px-4 py-3">Memuat...</p>
+              /* Skeleton saat fetch history pertama kali */
+              <div className="flex flex-col gap-1 px-4 py-2">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-2 py-2.5">
+                    <Skeleton className="h-4 w-24 rounded" />
+                    <Skeleton className="h-4 w-16 rounded" />
+                  </div>
+                ))}
+              </div>
             ) : history.length === 0 ? (
               <p className="text-gray-400 text-sm px-4 py-3">Belum ada riwayat.</p>
             ) : (
               history.map((item) => {
                 const r = riskConfig(item.risk_label);
                 const isActive = selectedItem?.id === item.id && view === "result";
+                const isLoadingThis = loadingHistoryId === item.id; // ← item ini sedang loading?
+
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleSelectHistory(item)}
-                    className={`w-full text-left px-4 py-3 transition-colors cursor-pointer border-0 bg-transparent flex items-center gap-2 ${isActive ? "bg-blue-50" : "hover:bg-gray-50"}`}
+                    disabled={!!loadingHistoryId} // ← disable semua item saat ada yang loading
+                    className={`w-full text-left px-4 py-3 transition-colors border-0 bg-transparent flex items-center gap-2
+                      ${isActive ? "bg-blue-50" : "hover:bg-gray-50"}
+                      ${loadingHistoryId && !isLoadingThis ? "opacity-40" : ""}
+                      ${isLoadingThis ? "cursor-wait" : "cursor-pointer"}
+                    `}
                   >
-                    {/* username & label diperbesar: text-xs → text-sm */}
-                    <span className={`text-sm font-semibold ${r.color}`}>@{item.ig_username}</span>
-                    <span className="text-gray-300 text-sm">-</span>
-                    <span className={`text-sm ${r.color}`}>{r.text}</span>
+                    {isLoadingThis ? (
+                      /* Skeleton hanya pada item yang diklik */
+                      <>
+                        <Skeleton className="h-4 w-28 rounded" />
+                        <Skeleton className="h-4 w-16 rounded" />
+                      </>
+                    ) : (
+                      <>
+                        <span className={`text-sm font-semibold ${r.color}`}>@{item.ig_username}</span>
+                        <span className="text-gray-300 text-sm">-</span>
+                        <span className={`text-sm ${r.color}`}>{r.text}</span>
+                      </>
+                    )}
                   </button>
                 );
               })
@@ -163,87 +191,75 @@ export default function DashboardPage() {
         </aside>
 
         {/* MAIN CONTENT */}
-          {/* SEARCH VIEW */}
-          {view === "search" && (
-            <main className="flex-1 flex items-center justify-center p-8">
-              <div className="w-full max-w-md text-center">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "#5b8dee" }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5}>
-                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-                  </svg>
-                </div>
-                <h2 className="text-lg font-bold mb-1">Analisis Akun Instagram</h2>
-                <form onSubmit={handleSearch} className="flex gap-2 mt-4">
-                  <Input
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                    placeholder="username_instagram"
-                    disabled={searching}
-                    className="flex-1 border-gray-200 focus:border-blue-400"
-                  />
-                  <Button
-                    type="submit"
-                    disabled={searching || !searchInput.trim()}
-                    style={{ background: "#5b8dee" }}
-                    className="hover:opacity-90 transition-opacity text-white border-0"
-                  >
-                    {searching
-                      ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      : "Analisis"
-                    }
-                  </Button>
-                </form>
-                {searching && <p className="text-gray-400 text-xs mt-3 animate-pulse">Sedang menganalisis, mohon tunggu 5–30 detik...</p>}
-                {searchError && <p className="text-red-500 text-sm mt-3">{searchError}</p>}
+        {/* SEARCH VIEW */}
+        {view === "search" && (
+          <main className="flex-1 flex items-center justify-center p-8">
+            <div className="w-full max-w-md text-center">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: "#5b8dee" }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5}>
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
               </div>
-            </main>
-          )}
+              <h2 className="text-lg font-bold mb-1">Analisis Akun Instagram</h2>
+              <form onSubmit={handleSearch} className="flex gap-2 mt-4">
+                <Input
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  placeholder="username_instagram"
+                  disabled={searching}
+                  className="flex-1 border-gray-200 focus:border-blue-400"
+                />
+                <Button
+                  type="submit"
+                  disabled={searching || !searchInput.trim()}
+                  style={{ background: "#5b8dee" }}
+                  className="hover:opacity-90 transition-opacity text-white border-0"
+                >
+                  {searching
+                    ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    : "Analisis"
+                  }
+                </Button>
+              </form>
+              {searching && <p className="text-gray-400 text-xs mt-3 animate-pulse">Sedang menganalisis, mohon tunggu 5–30 detik...</p>}
+              {searchError && <p className="text-red-500 text-sm mt-3">{searchError}</p>}
+            </div>
+          </main>
+        )}
 
-          
-          {/* RESULT VIEW */}
-          {view === "result" && selectedItem && (
-            <main className="flex-1 p-6 overflow-y-auto">
-              <div className="max-w-2xl mx-auto">
-
-                {/* Outer white card wrapper — seperti di Figma */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-
-                  {/* Username header */}
-                  <div className="flex items-center gap-3 mb-5">
-                    <h2 className="text-xl font-bold" style={{ color: "#5b8dee" }}>@{selectedItem.ig_username}</h2>
-                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${risk.badgeBg}`}>
-                      {risk.text}
-                    </span>
-                  </div>
-
-                  {/* Stats cards */}
-                  <div className="grid grid-cols-3 gap-3 mb-4">
-                    <div className="rounded-2xl p-5 text-center" style={{ background: "#fff0f0" }}>
-                      <p className="text-3xl font-bold" style={{ color: "#f87171" }}>{parseFloat(selectedItem.bot_percentage).toFixed(0)}%</p>
-                      <p className="text-xs mt-1" style={{ color: "#fca5a5" }}>Bot</p>
-                    </div>
-                    <div className="rounded-2xl p-5 text-center" style={{ background: "#f0fdf4" }}>
-                      <p className="text-3xl font-bold" style={{ color: "#34d399" }}>{parseFloat(selectedItem.real_percentage).toFixed(0)}%</p>
-                      <p className="text-xs mt-1" style={{ color: "#6ee7b7" }}>Asli</p>
-                    </div>
-                    <div className="rounded-2xl p-5 text-center bg-gray-50 border border-gray-100">
-                      <p className="text-3xl font-bold text-gray-700">{selectedItem.total_sample}</p>
-                      <p className="text-xs text-gray-400 mt-1">Sampel</p>
-                    </div>
-                  </div>
-
-                  {/* Rekomendasi */}
-                  <div className="rounded-2xl p-5 bg-gray-50 border border-gray-100">
-                    <p className="text-xs text-gray-400 uppercase tracking-widest font-medium mb-2">Rekomendasi</p>
-                    <p className="text-sm text-gray-600 leading-relaxed">{selectedItem.recommendation}</p>
-                  </div>
-
+        {/* RESULT VIEW */}
+        {view === "result" && selectedItem && (
+          <main className="flex-1 p-6 overflow-y-auto">
+            <div className="max-w-2xl mx-auto">
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div className="flex items-center gap-3 mb-5">
+                  <h2 className="text-xl font-bold" style={{ color: "#5b8dee" }}>@{selectedItem.ig_username}</h2>
+                  <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${risk.badgeBg}`}>
+                    {risk.text}
+                  </span>
                 </div>
-                {/* end outer white card */}
-
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-2xl p-5 text-center" style={{ background: "#fff0f0" }}>
+                    <p className="text-3xl font-bold" style={{ color: "#f87171" }}>{parseFloat(selectedItem.bot_percentage).toFixed(0)}%</p>
+                    <p className="text-xs mt-1" style={{ color: "#fca5a5" }}>Bot</p>
+                  </div>
+                  <div className="rounded-2xl p-5 text-center" style={{ background: "#f0fdf4" }}>
+                    <p className="text-3xl font-bold" style={{ color: "#34d399" }}>{parseFloat(selectedItem.real_percentage).toFixed(0)}%</p>
+                    <p className="text-xs mt-1" style={{ color: "#6ee7b7" }}>Asli</p>
+                  </div>
+                  <div className="rounded-2xl p-5 text-center bg-gray-50 border border-gray-100">
+                    <p className="text-3xl font-bold text-gray-700">{selectedItem.total_sample}</p>
+                    <p className="text-xs text-gray-400 mt-1">Sampel</p>
+                  </div>
+                </div>
+                <div className="rounded-2xl p-5 bg-gray-50 border border-gray-100">
+                  <p className="text-xs text-gray-400 uppercase tracking-widest font-medium mb-2">Rekomendasi</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">{selectedItem.recommendation}</p>
+                </div>
               </div>
-            </main>
-          )}
+            </div>
+          </main>
+        )}
       </div>
     </div>
   );
