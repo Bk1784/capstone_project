@@ -2,17 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
 const BASE_URL = "https://inspector-api-five.vercel.app/api";
 
@@ -22,6 +11,7 @@ export default function ProfilePage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
 
   const handleSave = async (e) => {
@@ -58,129 +48,76 @@ export default function ProfilePage() {
   };
 
   return (
-    <div style={{ position: "fixed", inset: 0, display: "flex", flexDirection: "column", background: "#f0f4ff", overflow: "hidden" }}>
+    <div className="h-screen w-screen flex flex-col p-4 gap-3" style={{ background: "#e8eeff" }}>
 
-      {/* ── HEADER — floating with margin all sides ── */}
-      <div style={{ flexShrink: 0, padding: "12px 12px 0 12px" }}>
-      <header style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "10px 20px",
-        background: "#fff",
-        borderRadius: 14,
-        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-        zIndex: 10,
-      }}>
-        {/* Kiri: tombol kembali + logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      {/* ── HEADER — identik dengan Dashboard ── */}
+      <header className="flex-shrink-0 flex items-center justify-between px-5 py-3 bg-white rounded-xl border border-gray-200 shadow-sm">
+        <div className="flex items-center gap-3">
+          {/* Tombol kembali */}
           <button
             onClick={() => navigate("/dashboard")}
-            style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 6, display: "flex", alignItems: "center" }}
+            className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-gray-100 transition-colors border-0 bg-transparent cursor-pointer"
           >
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#6b7280" strokeWidth={2}>
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ width: 24, height: 24, borderRadius: 6, background: "#5b8dee", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: "#5b8dee" }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={3}>
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
               </svg>
             </div>
-            <span style={{ fontWeight: 700, fontSize: 14, color: "#5b8dee" }}>Inspector</span>
+            <span className="font-bold text-sm" style={{ color: "#5b8dee" }}>Inspector</span>
           </div>
         </div>
 
-        {/* Kanan: user info + tombol keluar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <button
-                style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#ef4444", fontWeight: 500, padding: "4px 10px", borderRadius: 8, transition: "background .15s" }}
-                onMouseOver={e => e.currentTarget.style.background = "#fef2f2"}
-                onMouseOut={e => e.currentTarget.style.background = "none"}
-              >
-                Keluar
-              </button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Keluar dari Inspector?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Kamu akan keluar dari akun <strong>{user?.name}</strong>. Kamu perlu login kembali untuk menggunakan Inspector.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Batal</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => { logout(); navigate("/"); }}
-                  style={{ background: "#ef4444" }}
-                  className="hover:bg-red-600"
-                >
-                  Ya, Keluar
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 14, color: "#6b7280" }}>{user?.name || ""}</span>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowLogoutModal(true)}
+            className="text-sm font-medium text-red-400 hover:text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors border-0 bg-transparent cursor-pointer"
+          >
+            Keluar
+          </button>
+          <div className="flex items-center gap-2.5">
+            <span className="text-sm text-gray-500">{user?.name || ""}</span>
             <Avatar className="w-8 h-8">
               <AvatarImage src={user?.picture} />
-              <AvatarFallback style={{ fontSize: 12, background: "#dbeafe", color: "#2563eb" }}>{user?.name?.[0]}</AvatarFallback>
+              <AvatarFallback className="text-xs bg-blue-100 text-blue-600">{user?.name?.[0]}</AvatarFallback>
             </Avatar>
           </div>
         </div>
       </header>
-      </div>
 
-      {/* ── BODY — scrollable content area ── */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "24px 12px 12px" }}>
+      {/* ── BODY ── */}
+      <div className="flex-1 overflow-y-auto min-h-0">
         <div style={{ maxWidth: 480, margin: "0 auto" }}>
 
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#1e293b", marginBottom: 24 }}>Pengaturan Profil</h1>
+          <h1 className="text-xl font-bold text-gray-800 mb-4">Pengaturan Profil</h1>
 
           {/* Profile info card */}
-          <div style={{
-            background: "#fff",
-            border: "1px solid #f1f5f9",
-            borderRadius: 16,
-            padding: 20,
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-            marginBottom: 16,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-          }}>
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex items-center gap-4 mb-3">
             <img
               src={user?.picture}
               alt="Profile"
-              style={{ width: 56, height: 56, borderRadius: "50%", border: "2px solid #5b8dee", objectFit: "cover", flexShrink: 0 }}
+              className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+              style={{ border: "2px solid #5b8dee" }}
             />
             <div>
-              <p style={{ fontWeight: 700, color: "#1e293b", fontSize: 15, margin: 0 }}>{user?.name}</p>
-              <p style={{ fontSize: 13, color: "#6b7280", margin: "2px 0 0" }}>{user?.email}</p>
-              <p style={{ fontSize: 11, color: "#9ca3af", margin: "4px 0 0" }}>Foto diambil dari akun Google</p>
+              <p className="font-bold text-gray-800 text-sm">{user?.name}</p>
+              <p className="text-sm text-gray-500 mt-0.5">{user?.email}</p>
+              <p className="text-xs text-gray-400 mt-1">Foto diambil dari akun Google</p>
             </div>
           </div>
 
           {/* Form card */}
           <form
             onSubmit={handleSave}
-            style={{
-              background: "#fff",
-              border: "1px solid #f1f5f9",
-              borderRadius: 16,
-              padding: 20,
-              display: "flex",
-              flexDirection: "column",
-              gap: 20,
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-            }}
+            className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col gap-5"
           >
             {/* Nama */}
             <div>
-              <label style={{ fontSize: 11, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, display: "block", marginBottom: 8 }}>
+              <label className="text-xs text-gray-400 uppercase tracking-widest font-medium block mb-2">
                 Nama Tampilan
               </label>
               <input
@@ -190,57 +127,33 @@ export default function ProfilePage() {
                 placeholder="Masukkan nama kamu"
                 minLength={2}
                 maxLength={100}
-                style={{
-                  width: "100%", boxSizing: "border-box",
-                  background: "#f9fafb", border: "1px solid #e5e7eb",
-                  borderRadius: 10, padding: "10px 14px",
-                  fontSize: 14, color: "#1e293b", outline: "none",
-                  transition: "border-color .2s",
-                }}
-                onFocus={e => e.target.style.borderColor = "#5b8dee"}
-                onBlur={e => e.target.style.borderColor = "#e5e7eb"}
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-800 outline-none transition-colors focus:border-blue-400"
               />
-              <p style={{ fontSize: 11, color: "#9ca3af", marginTop: 6 }}>Min. 2 karakter, maks. 100 karakter.</p>
+              <p className="text-xs text-gray-400 mt-1.5">Min. 2 karakter, maks. 100 karakter.</p>
             </div>
 
             {/* Email (disabled) */}
             <div>
-              <label style={{ fontSize: 11, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600, display: "block", marginBottom: 8 }}>
+              <label className="text-xs text-gray-400 uppercase tracking-widest font-medium block mb-2">
                 Email
               </label>
               <input
                 type="email"
                 value={user?.email}
                 disabled
-                style={{
-                  width: "100%", boxSizing: "border-box",
-                  background: "#f3f4f6", border: "1px solid #e5e7eb",
-                  borderRadius: 10, padding: "10px 14px",
-                  fontSize: 14, color: "#9ca3af", outline: "none",
-                  cursor: "not-allowed", opacity: 0.7,
-                }}
+                className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-400 outline-none cursor-not-allowed opacity-70"
               />
-              <p style={{ fontSize: 11, color: "#9ca3af", marginTop: 6 }}>Email tidak dapat diubah.</p>
+              <p className="text-xs text-gray-400 mt-1.5">Email tidak dapat diubah.</p>
             </div>
 
-            {error && <p style={{ color: "#ef4444", fontSize: 13, margin: 0 }}>{error}</p>}
+            {error && <p className="text-red-500 text-sm">{error}</p>}
 
             {/* Submit button */}
             <button
               type="submit"
               disabled={!username.trim() || username.trim().length < 2 || loading}
-              style={{
-                background: saved ? "#10b981" : "#5b8dee",
-                color: "#fff",
-                fontWeight: 700,
-                fontSize: 14,
-                border: "none",
-                borderRadius: 10,
-                padding: "12px 0",
-                cursor: loading || !username.trim() || username.trim().length < 2 ? "not-allowed" : "pointer",
-                opacity: !username.trim() || username.trim().length < 2 ? 0.5 : 1,
-                transition: "background .2s, opacity .2s",
-              }}
+              className="w-full py-3 rounded-lg font-bold text-sm text-white border-0 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: saved ? "#10b981" : "#5b8dee" }}
             >
               {loading ? "Menyimpan..." : saved ? "✓ Tersimpan!" : "Simpan Perubahan"}
             </button>
@@ -248,6 +161,69 @@ export default function ProfilePage() {
 
         </div>
       </div>
+      {showLogoutModal && (
+        <div
+          onClick={() => setShowLogoutModal(false)}
+          style={{
+            position: "fixed", inset: 0, zIndex: 100,
+            background: "rgba(0,0,0,0.35)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            backdropFilter: "blur(2px)",
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: "#fff",
+              borderRadius: 16,
+              padding: "28px 28px 24px",
+              width: "100%", maxWidth: 360,
+              boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+              display: "flex", flexDirection: "column", gap: 8,
+            }}
+          >
+            {/* Icon */}
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: "#fef2f2", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 4 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+              </svg>
+            </div>
+
+            <p style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: 0 }}>Keluar dari Inspector?</p>
+            <p style={{ fontSize: 13, color: "#6b7280", margin: 0, lineHeight: 1.6 }}>
+              Kamu akan keluar dari akun <strong style={{ color: "#1e293b" }}>{user?.name}</strong>. Kamu perlu login kembali untuk menggunakan Inspector.
+            </p>
+
+            {/* Buttons */}
+            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                style={{
+                  flex: 1, padding: "10px 0", borderRadius: 10, border: "1px solid #e5e7eb",
+                  background: "#f9fafb", color: "#374151", fontWeight: 600, fontSize: 14,
+                  cursor: "pointer", transition: "background .15s",
+                }}
+                onMouseOver={e => e.currentTarget.style.background = "#f3f4f6"}
+                onMouseOut={e => e.currentTarget.style.background = "#f9fafb"}
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => { logout(); navigate("/"); }}
+                style={{
+                  flex: 1, padding: "10px 0", borderRadius: 10, border: "none",
+                  background: "#ef4444", color: "#fff", fontWeight: 600, fontSize: 14,
+                  cursor: "pointer", transition: "background .15s",
+                }}
+                onMouseOver={e => e.currentTarget.style.background = "#dc2626"}
+                onMouseOut={e => e.currentTarget.style.background = "#ef4444"}
+              >
+                Ya, Keluar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
