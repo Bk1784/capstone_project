@@ -6,11 +6,13 @@ import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
 import CallbackPage from "./pages/CallbackPage";
 
-// Loading screen saat cek session
 function LoadingScreen() {
   return (
-    <div className="min-h-screen bg-[#0A192F] flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-[#112240] border-t-[#64FFDA] rounded-full animate-spin" />
+    <div className="h-screen w-screen flex items-center justify-center" style={{ background: "#e8eeff" }}>
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm px-8 py-6 flex flex-col items-center gap-4">
+        <div className="w-8 h-8 rounded-full border-2 border-gray-100 animate-spin" style={{ borderTopColor: "#5b8dee" }} />
+        <p className="text-sm text-gray-500">Memuat...</p>
+      </div>
     </div>
   );
 }
