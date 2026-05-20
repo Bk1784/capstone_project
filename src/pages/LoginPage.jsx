@@ -13,7 +13,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ background: "#f0f4ff" }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-6 flex items-center justify-center gap-2">
-          <span className="font-bold text-base" style={{ color: "#5b8dee" }}>FakeRadar</span>
+          <span className="font-bold text-base" style={{ color: "#5b8dee" }}>InsPector</span>
         </div>
         <Card className="shadow-sm border-gray-100">
           <CardHeader className="text-center pb-2">

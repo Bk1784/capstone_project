@@ -18,7 +18,7 @@ export default function LandingPage() {
                 <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
               </svg>
             </div>
-            <span className="font-bold text-sm" style={{ color: "#5b8dee" }}>Inspector</span>
+            <span className="font-bold text-sm" style={{ color: "#5b8dee" }}>InsPector</span>
           </div>
           <Button
             size="sm"
@@ -43,7 +43,7 @@ export default function LandingPage() {
             mana yang <span style={{ color: "#f87171" }}>palsu</span>?
           </h1>
           <p className="text-gray-500 text-lg max-w-md mx-auto mb-8 leading-relaxed">
-            Masukkan username Instagram. Inspector menganalisis dan memberikan skor kepalsuan akun secara instan.
+            Masukkan username Instagram. InsPector menganalisis dan memberikan skor kepalsuan akun secara instan.
           </p>
           <Button
             size="lg"
@@ -176,7 +176,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="text-center py-4 text-gray-400 text-xs">
-        © 2026 Inspector — Capstone Project.
+        © 2026 InsPector — Capstone Project.
       </footer>
     </div>
   );
