@@ -278,8 +278,8 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 md:gap-3 mb-3 md:mb-4">
-                    <div className="rounded-xl md:rounded-2xl p-3 md:p-5 text-center" style={{ background: "#fff0f0" }}>
-                      <p className="text-2xl md:text-3xl font-bold" style={{ color: "#f87171" }}>{parseFloat(selectedItem.bot_percentage).toFixed(0)}%</p>
+                    <div className="rounded-xl md:rounded-2xl p-2 md:p-5 text-center" style={{ background: "#fff0f0" }}>
+                      <p className="text-xl md:text-3xl font-bold" style={{ color: "#f87171" }}>{parseFloat(selectedItem.bot_percentage).toFixed(0)}%</p>
                       <p className="text-xs mt-1" style={{ color: "#fca5a5" }}>Bot</p>
                     </div>
                     <div className="rounded-xl md:rounded-2xl p-3 md:p-5 text-center" style={{ background: "#f0fdf4" }}>
