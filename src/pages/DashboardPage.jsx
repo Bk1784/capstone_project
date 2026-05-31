@@ -259,7 +259,7 @@ export default function DashboardPage() {
                     }
                   </Button>
                 </form>
-                {searching && <p className="text-gray-400 text-xs mt-3 animate-pulse">Sedang menganalisis, mohon tunggu 5–30 detik...</p>}
+                {searching && <p className="text-gray-400 text-xs mt-3 animate-pulse">Sedang menganalisis, mohon tunggu beberapa menit...</p>}
                 {searchError && <p className="text-red-500 text-sm mt-3">{searchError}</p>}
               </div>
             </main>
